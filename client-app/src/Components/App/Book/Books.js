@@ -1,5 +1,5 @@
 import React from 'react';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery, gql, useMutation } from '@apollo/client';
 
 const GET_BOOK_DATA = gql`
   query GET_BOOKS {
@@ -10,8 +10,25 @@ const GET_BOOK_DATA = gql`
   }
 `;
 
+
+const ADD_BOOKS = gql`
+  mutation addBooks($title: String!, $author: String!) {
+    addBooks(
+      input: {title: $title, author: $author}
+   ) {
+      title
+      author
+    }
+  }
+`;
+
+
 function Books() {
   const { loading, error, data } = useQuery(GET_BOOK_DATA);
+
+  const [UPDATE_BOOKS] = useMutation(ADD_BOOKS);
+
+  console.log([UPDATE_BOOKS]);
 
   if (loading)
     return <h2>Loading</h2>
@@ -44,6 +61,15 @@ function Books() {
           })
         }
       </table>
+
+      <button onClick={() =>
+        UPDATE_BOOKS({
+          variables: {
+            title: "Cars Book", author: "John Perk"
+          }
+        })
+      }>
+        Add Books</button>
 
     </div>
   )
